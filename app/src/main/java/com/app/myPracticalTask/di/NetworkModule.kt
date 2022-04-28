@@ -1,7 +1,7 @@
 package com.hubwallet.di
 
 import android.content.Context
-import android.preference.PreferenceManager
+
 import android.util.Log
 import com.app.myPracticalTask.BuildConfig
 import com.google.gson.Gson
@@ -46,7 +46,7 @@ class NetworkModule {
     @Provides
     fun providesOkhttpClient(
         interceptor: HttpLoggingInterceptor,
-        pref: PreferenceManager,
+
         @ApplicationContext context: Context
     ): OkHttpClient =
         OkHttpClient.Builder()
