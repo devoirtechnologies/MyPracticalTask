@@ -9,60 +9,37 @@ import androidx.databinding.DataBindingUtil
 import com.app.myPracticalTask.databinding.ActivityMainBinding
 import com.app.myPracticalTask.view.AlbumFragment
 import com.app.myPracticalTask.view.AlbumViewModel
+import com.app.myPracticalTask.view.pojo.AlbumWithPhotoResponse
 import com.app.myPracticalTask.view.pojo.PojoAlbum
+import com.app.myPracticalTask.view.pojo.PojoPhotos
+import com.hubwallet.commons.utils.Utils
 import com.hubwallet.utillss.ResultWrapper
 import dagger.hilt.android.AndroidEntryPoint
+import retrofit2.Response
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private val viewModel: AlbumViewModel by viewModels()
+
     private var viewBinding:ActivityMainBinding?=null
+    private var pojoAlbum: PojoAlbum?=null
+    private var pojoPhotos: PojoPhotos?=null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewBinding = DataBindingUtil.setContentView(this,R.layout.activity_main)
         homepage()
-        albumApi()
-    }
-
-    private fun albumApi() {
-        viewModel.AndroidGetAlbumData( ).observe(this,{
-            updateUI(it)
-        })
-    }
-    private fun updateUI(_state: ResultWrapper<Any>?) {
-        when (_state) {
-            is ResultWrapper.Loading -> {
-                viewBinding!!.progressBarB.visibility = View.VISIBLE
-            }
-            is ResultWrapper.NetworkError -> {
-                viewBinding!!.progressBarB.visibility = View.GONE
-            }
-            is ResultWrapper.GenericError -> {
-                viewBinding!!.progressBarB.visibility = View.GONE
-                _state.error?.error?.let {
-                    Toast.makeText(this, "err " + it, Toast.LENGTH_SHORT).show()
-                }
-            }
-            is ResultWrapper.Success -> {
-                when (_state.data) {
-                    is PojoAlbum -> {
-                        _state.data.let {
-                            setData()
-                        }
-                        // Toast.makeText(requireActivity(), "${_state.data.message} ", Toast.LENGTH_LONG).show()
-                    }
-
-
-                }
-                viewBinding!!.progressBarB.visibility = View.GONE
-                //requireActivity().enableTouch()
-            }
-        }
-    }
-
-    private fun setData() {
 
     }
+
+
+
+
+    /* fun setData(): PojoAlbum {
+    return pojoAlbum!!
+    }
+    fun setPhotoData(): PojoPhotos {
+    return pojoPhotos!!
+    }*/
 
     fun homepage() {
         val ft = supportFragmentManager.beginTransaction()

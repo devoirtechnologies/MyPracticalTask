@@ -40,6 +40,7 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.text.isDigitsOnly
 import androidx.recyclerview.widget.RecyclerView
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
+import com.hubwallet.commons.constants.ConstantValues
 import com.hubwallet.utillss.ErrorResponse
 import com.hubwallet.utillss.ResultWrapper
 import retrofit2.Response
@@ -51,11 +52,31 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 
-class Utils   {
+class Utils @Inject constructor(val retrofit: Retrofit)  {
 
     companion object {
+        fun <T1, T2> ifNotNull(value1: T1?, value2: T2?, bothNotNull: (T1, T2) -> (Unit)) {
+            if (value1 != null && value2 != null) {
+                bothNotNull(value1, value2)
+            }
+        }
+        fun <T : Any> parseError(response: Response<T>): ResultWrapper<Nothing> {
+            val retrofit = Retrofit.Builder() .build()
+            val converter = retrofit.responseBodyConverter<ErrorResponse>(
+                ErrorResponse::class.java,
+                arrayOfNulls(0)
+            )
 
+            val error: ErrorResponse?
 
+            error = try {
+                converter.convert(response.errorBody()!!)
+            } catch (e: IOException) {
+                return ResultWrapper.NetworkError
+            }
+
+            return ResultWrapper.GenericError(error)
+        }
     }
 
 
